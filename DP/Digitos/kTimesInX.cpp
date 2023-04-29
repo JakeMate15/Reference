@@ -6,10 +6,6 @@ using namespace std;
 vector<int> num;
 int a, b, d, k;
 int DP[12][12][2];
-/// DP[p][c][f] = Number of valid numbers <= b from this state
-/// p = current position from left side (zero based)
-/// c = number of times we have placed the digit d so far
-/// f = the number we are building has already become smaller than b? [0 = no, 1 = yes]
 
 int call(int pos, int cnt, int f){
     if(cnt > k) return 0;
