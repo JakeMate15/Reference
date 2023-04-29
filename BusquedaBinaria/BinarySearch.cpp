@@ -1,4 +1,4 @@
-\\Devuelve el maximo indice tal que v[i]<=x
+//Devuelve el maximo indice tal que v[i]<=x
 int closestToTheLeft(vector<int>& v, int x) {
     int l = -1, r = v.size(),m;
     while (r > l + 1) {
@@ -9,7 +9,7 @@ int closestToTheLeft(vector<int>& v, int x) {
     return l;
 }
 
-\\Devuelve el indice del primer elemento v[i]>=x
+//Devuelve el indice del primer elemento v[i]>=x
 int closestToTheRight(vector<int>& v, int x){
     int l=-1,r=n,m;
     while(r>l+1){
