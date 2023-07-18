@@ -1,3 +1,4 @@
+//Para procesar querys de tipo k-esimo es necesario crear un arbol binario perfector(llenar con 0's)
 template<typename T>
 struct SegmentTree{
 	int N;
@@ -36,5 +37,43 @@ struct SegmentTree{
 		}
 		return res;                 //Dato normal
 		return merge(resl,resr);    //Dato compuesto
+	}
+
+	//Para estas querys es necesario que el st tenga el tam de la siguiente potencia de 2
+	//ll nT = 1;
+	// while(nT<n) nT<<=1;
+	//vector<int> a(nT,0);	
+
+	//Encontrar k-esimo 1 en un st de 1's
+	int Kth_One(int k) {
+		int i = 0, s = N >> 1;
+		for(int p = 2; p < 2 * N; p <<= 1, s >>= 1) {
+			if(k < ST[p])	continue;
+			k -= ST[p++];	i += s;
+		}
+		return i;
+	}
+
+	//i del primer elemento >= k en todo el arr
+	int atLeastX(int k){
+		int i = 0, s = N >> 1;
+		for(int p = 2; p < 2 * N; p <<= 1, s >>= 1) {
+			if(ST[p] < k)	p++, i += s;
+		}
+		if(ST[N + i] < k)	i = -1;
+		return i;
+	}
+
+	//i del primer elemento >= k en [l,fin]
+	//atLeastX(k,l,1,nT)
+	int atLeastX(int x, int l, int p, int s) {
+		if(ST[p] < x or s <= l)	return -1;
+		if((p << 1) >= 2 * N)
+			return (ST[p] >= x) - 1;
+		int i = atLeastX(x, l, p << 1, s >> 1);
+		if(i != -1)	return i;
+		i = atLeastX(x, l - (s >> 1), p << 1 | 1, s >> 1);
+		if(i == -1)	return -1;
+		return (s >> 1) + i;
 	}
 };
