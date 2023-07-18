@@ -1,56 +1,40 @@
-struct segtree {
-    int size;
-    vector<ll> vv;
+template<typename T>
+struct SegmentTree{
+	int N;
+	vector<T> ST;
+ 
+	//Creacion a partir de un arreglo O(n)
+	SegmentTree(int N, vector<T> & arr): N(N){
+		ST.resize(N << 1);
+		for(int i = 0; i < N; ++i)
+			ST[N + i] = arr[i];     //Dato normal
+			ST[N + i] = creaNodo(); //Dato compuesto
+		for(int i = N - 1; i > 0; --i)
+			ST[i] = ST[i << 1] + ST[i << 1 | 1];        //Dato normal
+			ST[i] = merge(ST[i << 1] , ST[i << 1 | 1]); //Dato compuesto
+	}
+ 
+	//Actualizacion de un elemento en la posicion i
+	void update(int i, T value){
+		ST[i += N] = value;     //Dato normal
+		ST[i += N] = creaNodo();//Dato compuesto
+		while(i >>= 1)
+			ST[i] = ST[i << 1] + ST[i << 1 | 1];        //Dato normal  
+			ST[i] = merge(ST[i << 1] , ST[i << 1 | 1]); //Dato compuesto
+	}
+ 
+	//query en [l, r]
+	T query(int l, int r){
+		T res = 0;  //Dato normal
+		nodo resl = creaNodo(), resr = creaNodo();//Dato compuesto
+		for(l += N, r += N; l <= r; l >>= 1, r >>= 1){
+			if(l & 1)       res += ST[l++]; //Dato normal
+			if(!(r & 1))    res += ST[r--]; //Dato normal
 
-    void build(vector<int> &nums) {
-        size = 1;
-        while (size < nums.size()) size *= 2;
-        vv.assign(2 * size, 0);
-        build(nums, 0, 0, size);
-    }
-
-    void build(vector<int> &nums, int x, int lx, int rx) {
-        if (rx - lx == 1) {
-            if (lx < nums.size()) {
-                vv[x] = nums[lx];
-            }
-        } else {
-            int m = (lx + rx) / 2;
-            build(nums, 2 * x + 1, lx, m);
-            build(nums, 2 * x + 2, m, rx);
-            vv[x] = vv[2 * x + 1] + vv[2 * x + 2];
-        }
-    }
-
-    void set(int i, int v) {
-        set(i, v, 0, 0, size);
-    }
-
-    void set(int i, int v, int x, int lx, int rx) {
-        if (rx - lx == 1) {
-            vv[x] = v;
-        } else {
-            int m = (lx + rx) / 2;
-            if (i < m) {
-                set(i, v, 2*x+1, lx, m);
-            } else {
-                set(i, v, 2*x+2, m, rx);
-            }
-            vv[x] = vv[2*x+1] + vv[2*x+2];
-        }
-    }
-
-    ll sum(int l, int r) {
-        return sum(l, r, 0, 0, size);
-    }
-
-    ll sum(int l, int r, int x, int lx, int rx) {
-        if (r <= lx) return 0;
-        if (l >= rx) return 0;
-        if (lx >= l && rx <= r) return vv[x];
-        int m = (lx + rx) / 2;
-        ll s1 = sum(l, r, 2*x+1, lx, m);
-        ll s2 = sum(l, r, 2*x+2, m, rx);
-        return s1 + s2;
-    }
+			if(l & 1)       resl = merge(resl,ST[l++]); //Dato compuesto
+			if(!(r & 1))    resr = merge(ST[r--],resr); //Dato compuesto
+		}
+		return res;                 //Dato normal
+		return merge(resl,resr);    //Dato compuesto
+	}
 };
