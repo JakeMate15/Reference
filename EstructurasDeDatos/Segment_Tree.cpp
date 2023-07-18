@@ -65,7 +65,7 @@ struct SegmentTree{
 	}
 
 	//i del primer elemento >= k en [l,fin]
-	//atLeastX(k,l,1,nT)
+	//Uso atLeastX(k,l,1,nT)
 	int atLeastX(int x, int l, int p, int s) {
 		if(ST[p] < x or s <= l)	return -1;
 		if((p << 1) >= 2 * N)
